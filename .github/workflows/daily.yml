@@ -33,32 +33,30 @@ jobs:
         run: |
           python3 - <<END
           import json
-          # 把GitHub的json字符串转Python值，null自动变成None
-          def parse_gh_str(gh_json_str):
-              return json.loads(gh_json_str)
-
+          import os
           config = {
             "notify": {
               "type": "telegram",
-              "token": parse_gh_str('${{ toJson(secrets.TELEGRAM_BOT_TOKEN) }}'),
-              "user_id": parse_gh_str('${{ toJson(secrets.TELEGRAM_USER_ID) }}')
+              "token": os.getenv("TELEGRAM_BOT_TOKEN") or None,
+              "user_id": os.getenv("TELEGRAM_USER_ID") or None
             },
             "bilibili": {
-              "cookie": parse_gh_str('${{ toJson(secrets.BILIBILI_COOKIE) }}')
+              "cookie": os.getenv("BILIBILI_COOKIE") or None
             },
             "netease": {
-              "cookie": parse_gh_str('${{ toJson(secrets.NETEASE_COOKIE) }}')
+              "cookie": os.getenv("NETEASE_COOKIE") or None
             },
             "txvideo": {
-              "cookie": parse_gh_str('${{ toJson(secrets.TXVIDEO_COOKIE) }}')
+              "cookie": os.getenv("TXVIDEO_COOKIE") or None
             },
             "wps": {
-              "cookie": parse_gh_str('${{ toJson(secrets.WPS_COOKIE) }}')
+              "cookie": os.getenv("WPS_COOKIE") or None
             },
             "iqiyi": {
-              "cookie": parse_gh_str('${{ toJson(secrets.IQIYI_COOKIE) }}')
+              "cookie": os.getenv("IQIYI_COOKIE") or None
             }
           }
+          # 标准json库导出，自动转义所有特殊字符
           with open("config.json", "w", encoding="utf-8") as f:
               json.dump(config, f, ensure_ascii=False, indent=2)
           END
