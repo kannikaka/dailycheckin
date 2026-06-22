@@ -33,30 +33,30 @@ jobs:
         run: |
           python3 - <<END
           import json
-          # 转换GitHub输出的null为Python合法None
-          def convert(s):
-              raw = ${{ toJson(s) }}
-              return None if raw is None else raw
+          # 把GitHub的json字符串转Python值，null自动变成None
+          def parse_gh_str(gh_json_str):
+              return json.loads(gh_json_str)
+
           config = {
             "notify": {
               "type": "telegram",
-              "token": convert(secrets.TELEGRAM_BOT_TOKEN),
-              "user_id": convert(secrets.TELEGRAM_USER_ID)
+              "token": parse_gh_str('${{ toJson(secrets.TELEGRAM_BOT_TOKEN) }}'),
+              "user_id": parse_gh_str('${{ toJson(secrets.TELEGRAM_USER_ID) }}')
             },
             "bilibili": {
-              "cookie": convert(secrets.BILIBILI_COOKIE)
+              "cookie": parse_gh_str('${{ toJson(secrets.BILIBILI_COOKIE) }}')
             },
             "netease": {
-              "cookie": convert(secrets.NETEASE_COOKIE)
+              "cookie": parse_gh_str('${{ toJson(secrets.NETEASE_COOKIE) }}')
             },
             "txvideo": {
-              "cookie": convert(secrets.TXVIDEO_COOKIE)
+              "cookie": parse_gh_str('${{ toJson(secrets.TXVIDEO_COOKIE) }}')
             },
             "wps": {
-              "cookie": convert(secrets.WPS_COOKIE)
+              "cookie": parse_gh_str('${{ toJson(secrets.WPS_COOKIE) }}')
             },
             "iqiyi": {
-              "cookie": convert(secrets.IQIYI_COOKIE)
+              "cookie": parse_gh_str('${{ toJson(secrets.IQIYI_COOKIE) }}')
             }
           }
           with open("config.json", "w", encoding="utf-8") as f:
