@@ -33,26 +33,30 @@ jobs:
         run: |
           python3 - <<END
           import json
+          # 转换GitHub输出的null为Python合法None
+          def convert(s):
+              raw = ${{ toJson(s) }}
+              return None if raw is None else raw
           config = {
             "notify": {
               "type": "telegram",
-              "token": ${{ toJson(secrets.TELEGRAM_BOT_TOKEN) }},
-              "user_id": ${{ toJson(secrets.TELEGRAM_USER_ID) }}
+              "token": convert(secrets.TELEGRAM_BOT_TOKEN),
+              "user_id": convert(secrets.TELEGRAM_USER_ID)
             },
             "bilibili": {
-              "cookie": ${{ toJson(secrets.BILIBILI_COOKIE) }}
+              "cookie": convert(secrets.BILIBILI_COOKIE)
             },
             "netease": {
-              "cookie": ${{ toJson(secrets.NETEASE_COOKIE) }}
+              "cookie": convert(secrets.NETEASE_COOKIE)
             },
             "txvideo": {
-              "cookie": ${{ toJson(secrets.TXVIDEO_COOKIE) }}
+              "cookie": convert(secrets.TXVIDEO_COOKIE)
             },
             "wps": {
-              "cookie": ${{ toJson(secrets.WPS_COOKIE) }}
+              "cookie": convert(secrets.WPS_COOKIE)
             },
             "iqiyi": {
-              "cookie": ${{ toJson(secrets.IQIYI_COOKIE) }}
+              "cookie": convert(secrets.IQIYI_COOKIE)
             }
           }
           with open("config.json", "w", encoding="utf-8") as f:
