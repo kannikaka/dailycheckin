@@ -31,30 +31,33 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_USER_ID: ${{ secrets.TELEGRAM_USER_ID }}
         run: |
-          cat > config.json << EOF
-          {
+          python3 - <<END
+          import json
+          config = {
             "notify": {
               "type": "telegram",
-              "token": "${{ secrets.TELEGRAM_BOT_TOKEN }}",
-              "user_id": "${{ secrets.TELEGRAM_USER_ID }}"
+              "token": ${{ toJson(secrets.TELEGRAM_BOT_TOKEN) }},
+              "user_id": ${{ toJson(secrets.TELEGRAM_USER_ID) }}
             },
             "bilibili": {
-              "cookie": "${{ secrets.BILIBILI_COOKIE }}"
+              "cookie": ${{ toJson(secrets.BILIBILI_COOKIE) }}
             },
             "netease": {
-              "cookie": "${{ secrets.NETEASE_COOKIE }}"
+              "cookie": ${{ toJson(secrets.NETEASE_COOKIE) }}
             },
             "txvideo": {
-              "cookie": "${{ secrets.TXVIDEO_COOKIE }}"
+              "cookie": ${{ toJson(secrets.TXVIDEO_COOKIE) }}
             },
             "wps": {
-              "cookie": "${{ secrets.WPS_COOKIE }}"
+              "cookie": ${{ toJson(secrets.WPS_COOKIE) }}
             },
             "iqiyi": {
-              "cookie": "${{ secrets.IQIYI_COOKIE }}"
+              "cookie": ${{ toJson(secrets.IQIYI_COOKIE) }}
             }
           }
-          EOF
+          with open("config.json", "w", encoding="utf-8") as f:
+              json.dump(config, f, ensure_ascii=False, indent=2)
+          END
           python run.py
 
       - name: Upload logs
